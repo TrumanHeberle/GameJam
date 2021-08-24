@@ -72,7 +72,6 @@ namespace Cainos.PixelArtTopDown_Basic
                            combo++;
                            animator.SetInteger("attackCounter", combo);
                            animator.SetBool("isAttacking", true);
-                           Debug.Log("Attack " + combo);
                            lastTime = Time.time;
                        }
                        yield return null;

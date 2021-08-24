@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
+  // transform object to track
   public Transform target;
-  public float responsiveness;
+  // responsiveness to shift camera
+  public float responsiveness = 5;
 
   void Update() {
     if (target == null) return;
