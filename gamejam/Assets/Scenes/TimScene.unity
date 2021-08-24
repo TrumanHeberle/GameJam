@@ -1986,6 +1986,30 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &260459715 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 135177088498848383, guid: ea204facdf90d2544832000878ebf185,
+    type: 3}
+  m_PrefabInstance: {fileID: 1769816299}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &260459716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260459715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8bb6e314f97257469cf5dbf88e81f49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &260459721 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 135177088498848380, guid: ea204facdf90d2544832000878ebf185,
+    type: 3}
+  m_PrefabInstance: {fileID: 1769816299}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1997,6 +2021,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2012,6 +2037,20 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac6a373bafcf554a83578fdc8eddf48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 260459721}
+  responsiveness: 5
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -2997,6 +3036,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 135177088498848382, guid: ea204facdf90d2544832000878ebf185,
+        type: 3}
+      propertyPath: speed
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 135177088498848383, guid: ea204facdf90d2544832000878ebf185,
         type: 3}
