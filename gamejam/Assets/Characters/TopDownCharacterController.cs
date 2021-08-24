@@ -10,41 +10,32 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private Animator animator;
         private SpriteRenderer spriteRender;
+        private Rigidbody2D body;
 
         private void Start()
         {
             animator = GetComponent<Animator>();
             spriteRender = GetComponent<SpriteRenderer>();
+            body = GetComponent<Rigidbody2D>();
         }
 
 
         private void Update()
         {
-            Vector2 dir = Vector2.zero;
-            if (Input.GetKey(KeyCode.A))
-            {
-                dir.x = -1;
-                spriteRender.flipX = true;
+            bool W = Input.GetKey(KeyCode.W);
+            bool A = Input.GetKey(KeyCode.A);
+            bool S = Input.GetKey(KeyCode.S);
+            bool D = Input.GetKey(KeyCode.D);
+            Vector2 dir = new Vector2((D?1:0)-(A?1:0), (W?1:0)-(S?1:0));
+            if (A) {
+              spriteRender.flipX = true;
             }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                dir.x = 1;
-                spriteRender.flipX = false;
+            else if (D) {
+              spriteRender.flipX = false;
             }
-
-            if (Input.GetKey(KeyCode.W))
-            {
-                dir.y = 1;
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                dir.y = -1;
-            }
-
             dir.Normalize();
             animator.SetBool("IdleOrMoving", dir.magnitude > 0);
-
-            GetComponent<Rigidbody2D>().velocity = speed * dir;
+            body.velocity = speed * dir;
         }
     }
 }
