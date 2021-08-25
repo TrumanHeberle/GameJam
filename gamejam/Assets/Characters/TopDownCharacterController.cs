@@ -1,23 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Cainos.PixelArtTopDown_Basic
 {
     public class TopDownCharacterController : MonoBehaviour
     {
-        //Player movement speed (in meters per second)
+        [Tooltip("Player Speed")]
         public float speed = 5;
-        //Cooldown time between attacks (in seconds)
+        [Tooltip("Melee Cooldown Time")]
         public float cooldown = 0.5f;
-        //Max time before combo ends (in seconds)
+        [Tooltip("Combo Time Window")]
         public float maxTime = 0.8f;
-        //Max number of attacks in combo
+        [Tooltip("Combo Limit")]
         public int maxCombo = 3;
+        [Tooltip("Maximum Health")]
+        public int maxHealth = 100;
+        [Tooltip("Health Bar")]
+        public Slider healthbar;
 
-        //Current combo
+        // current combo
         private int combo = 0;
-        //Time of last attack
+        // time of last attack
         private float lastTime;
 
         private Animator animator;
@@ -26,13 +31,16 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private void Start()
         {
+            // get parameters
             animator = GetComponent<Animator>();
             spriteRender = GetComponent<SpriteRenderer>();
             body = GetComponent<Rigidbody2D>();
+            // set up player attributes
+            healthbar.maxValue = maxHealth;
+            healthbar.value = maxHealth;
             //Starts the looping coroutine
             StartCoroutine("Melee");
         }
-
 
         private void Update()
         {
@@ -40,16 +48,35 @@ namespace Cainos.PixelArtTopDown_Basic
             bool A = Input.GetKey(KeyCode.A);
             bool S = Input.GetKey(KeyCode.S);
             bool D = Input.GetKey(KeyCode.D);
+            bool E = Input.GetKey(KeyCode.E);
             Vector2 dir = new Vector2((D?1:0)-(A?1:0), (W?1:0)-(S?1:0));
-            if (A) {
-              spriteRender.flipX = true;
-            }
-            else if (D) {
-              spriteRender.flipX = false;
-            }
             dir.Normalize();
-            animator.SetBool("IdleOrMoving", dir.magnitude > 0);
-            body.velocity = speed * dir;
+            this.Move(speed*dir);
+            if (E) this.Damage(1);
+        }
+
+        public void Kill() {
+          // handles killing the player
+          // TODO: implement
+        }
+
+        public void Damage(int damage)
+        {
+          // handles damaging the player
+          healthbar.value -= damage;
+          if (healthbar.value <= healthbar.minValue) this.Kill();
+        }
+
+        public void Move(Vector2 direction)
+        {
+          // handles moving the player
+          if (direction.x < 0) {
+            spriteRender.flipX = true;
+          } else if (direction.x > 0) {
+            spriteRender.flipX = false;
+          }
+          animator.SetBool("IdleOrMoving", direction.magnitude>0);
+          body.velocity = direction;
         }
 
         IEnumerator Melee () {
@@ -60,7 +87,6 @@ namespace Cainos.PixelArtTopDown_Basic
                    combo++;
                    animator.SetInteger("attackCounter", combo);
                    animator.SetBool("isAttacking", true);
-                   Debug.Log("Attack" + combo);
                    lastTime = Time.time;
 
                    //Combo loop that ends the combo if you reach the maxTime between attacks, or reach the end of the combo
