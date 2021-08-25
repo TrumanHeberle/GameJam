@@ -9,7 +9,7 @@ namespace Cainos.PixelArtTopDown_Basic
     {
         [Tooltip("Player Speed")]
         public float speed = 5;
-        [Tooltip("Melee Cooldown Time")]
+        [Tooltip("Attack Cooldown Time")]
         public float cooldown = 0.5f;
         [Tooltip("Combo Time Window")]
         public float maxTime = 0.8f;
@@ -20,6 +20,11 @@ namespace Cainos.PixelArtTopDown_Basic
         [Tooltip("Health Bar")]
         public Slider healthbar;
 
+        [Tooltip("Hurt Noise Clip")]
+        public AudioClip hurtNoise;
+        [Tooltip("Attack Noise Clip")]
+        public AudioClip attackNoise;
+
         // current combo
         private int combo = 0;
         // time of last attack
@@ -28,22 +33,22 @@ namespace Cainos.PixelArtTopDown_Basic
         private Animator animator;
         private SpriteRenderer spriteRender;
         private Rigidbody2D body;
+        private bool isFlipped;
 
-        private void Start()
-        {
+        private void Start() {
             // get parameters
             animator = GetComponent<Animator>();
             spriteRender = GetComponent<SpriteRenderer>();
             body = GetComponent<Rigidbody2D>();
             // set up player attributes
+            isFlipped = spriteRender.flipX;
             healthbar.maxValue = maxHealth;
             healthbar.value = maxHealth;
             //Starts the looping coroutine
             StartCoroutine("Melee");
         }
 
-        private void Update()
-        {
+        private void Update() {
             bool W = Input.GetKey(KeyCode.W);
             bool A = Input.GetKey(KeyCode.A);
             bool S = Input.GetKey(KeyCode.S);
@@ -60,23 +65,33 @@ namespace Cainos.PixelArtTopDown_Basic
           // TODO: implement
         }
 
-        public void Damage(int damage)
-        {
+        public void Damage(int damage) {
           // handles damaging the player
           healthbar.value -= damage;
-          if (healthbar.value <= healthbar.minValue) this.Kill();
+          if (healthbar.value <= healthbar.minValue) {
+            this.Kill();
+          } else {
+            AudioSource.PlayClipAtPoint(hurtNoise, this.transform.position);
+          }
         }
 
-        public void Move(Vector2 direction)
-        {
+        public void Move(Vector2 direction) {
           // handles moving the player
           if (direction.x < 0) {
-            spriteRender.flipX = true;
+            spriteRender.flipX = !isFlipped;
           } else if (direction.x > 0) {
-            spriteRender.flipX = false;
+            spriteRender.flipX = isFlipped;
           }
           animator.SetBool("IdleOrMoving", direction.magnitude>0);
           body.velocity = direction;
+        }
+
+        public void Attack(int attackId) {
+          // handles the player's attack
+          Debug.Log(attackId);
+          animator.SetInteger("attackCounter", attackId);
+          animator.SetBool("isAttacking", true);
+          AudioSource.PlayClipAtPoint(attackNoise, this.transform.position);
         }
 
         IEnumerator Melee () {
@@ -85,19 +100,17 @@ namespace Cainos.PixelArtTopDown_Basic
                //Checks if attacking and then starts of the combo
                if (Input.GetMouseButtonDown(0)) {
                    combo++;
-                   animator.SetInteger("attackCounter", combo);
-                   animator.SetBool("isAttacking", true);
+                   this.Attack(combo);
                    lastTime = Time.time;
 
                    //Combo loop that ends the combo if you reach the maxTime between attacks, or reach the end of the combo
-                   while ((Time.time - lastTime) < maxTime && combo <= maxCombo) {
+                   while ((Time.time-lastTime) < maxTime || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) {
                      body.velocity = Vector2.zero;
                      animator.SetBool("IdleOrMoving", false);
                        //Attacks if your cooldown has reset
-                       if (Input.GetMouseButtonDown(0) && (Time.time - lastTime) > cooldown) {
+                       if (Input.GetMouseButtonDown(0) && (Time.time-lastTime) > cooldown && combo < maxCombo) {
                            combo++;
-                           animator.SetInteger("attackCounter", combo);
-                           animator.SetBool("isAttacking", true);
+                           this.Attack(combo);
                            lastTime = Time.time;
                        }
                        yield return null;
@@ -106,7 +119,7 @@ namespace Cainos.PixelArtTopDown_Basic
                    combo = 0;
                    animator.SetInteger("attackCounter", combo);
                    animator.SetBool("isAttacking", false);
-                   yield return new WaitForSeconds(cooldown - (Time.time - lastTime));
+                   yield return new WaitForSeconds(cooldown-(Time.time-lastTime));
                }
                yield return null;
            }
