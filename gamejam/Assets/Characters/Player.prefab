@@ -107,6 +107,8 @@ MonoBehaviour:
   maxCombo: 3
   maxHealth: 100
   healthbar: {fileID: 7998351236719857593}
+  hurtNoise: {fileID: 8300000, guid: ba9995e3839b62a44ad0e7e2074af5f6, type: 3}
+  attackNoise: {fileID: 8300000, guid: 302c60c5dead31740bc2325f208cf0b3, type: 3}
 --- !u!50 &2864297759035227175
 Rigidbody2D:
   serializedVersion: 4
