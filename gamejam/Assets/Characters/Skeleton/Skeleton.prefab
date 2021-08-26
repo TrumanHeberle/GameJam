@@ -82,7 +82,7 @@ SpriteRenderer:
   m_Sprite: {fileID: -3893057473318805091, guid: 0a6899409eb7fac43ba52ce9ad5cf997,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.85, y: 1.09}
@@ -176,6 +176,8 @@ MonoBehaviour:
   hurtNoise: {fileID: 5189194369667866645, guid: 64dc287bd75d7e243ab24c2d7464adce,
     type: 3}
   attackNoise: {fileID: 2785559645724475288, guid: b3ff9b63ab3ca9b47add7412511f7b90,
+    type: 3}
+  strengthenNoise: {fileID: 6435459601995423113, guid: 0976b71284b612d4d9bb15211175eb50,
     type: 3}
   stats: {fileID: 0}
 --- !u!114 &3130889927513561100

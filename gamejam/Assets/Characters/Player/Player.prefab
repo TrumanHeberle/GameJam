@@ -59,6 +59,9 @@ MonoBehaviour:
     type: 3}
   attackNoise: {fileID: 1076602515804528615, guid: 26d45ee81aa9d0a43bd9ef7ff695eac7,
     type: 3}
+  strengthenNoise: {fileID: 6435459601995423113, guid: 0976b71284b612d4d9bb15211175eb50,
+    type: 3}
+  stats: {fileID: 0}
 --- !u!114 &573290180214280575
 MonoBehaviour:
   m_ObjectHideFlags: 0

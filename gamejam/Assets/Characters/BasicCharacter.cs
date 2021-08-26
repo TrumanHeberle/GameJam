@@ -17,6 +17,8 @@ public class BasicCharacter : MonoBehaviour
     public AudioSource hurtNoise;
     [Tooltip("Attack Noise Source")]
     public AudioSource attackNoise;
+    [Tooltip("Strengthen Noise Source")]
+    public AudioSource strengthenNoise;
 
     // current combo
     private int combo = 0;
@@ -56,6 +58,7 @@ public class BasicCharacter : MonoBehaviour
 
     private void PlaySound(AudioSource src) {
       // handles playing an audio source
+      if (src == null) return;
       AudioSource audio = Instantiate(src, this.transform.position, Quaternion.identity);
       audio.transform.parent = this.transform;
       audio.Play();
@@ -71,6 +74,7 @@ public class BasicCharacter : MonoBehaviour
     public void Strengthen(float strength) {
       // handles strengthening the player
       stats.strength += strength;
+      this.PlaySound(strengthenNoise);
     }
 
     public void Damage(int damage) {
