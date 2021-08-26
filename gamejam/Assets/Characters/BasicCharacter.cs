@@ -26,7 +26,7 @@ public class BasicCharacter : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRender;
     private Rigidbody2D body;
-    private CharacterStats stats;
+    public CharacterStats stats;
     private bool isFlipped;
 
     private void Start() {
@@ -85,9 +85,19 @@ public class BasicCharacter : MonoBehaviour
     public void Move(Vector2 direction) {
       // handles moving the player
       if (direction.x < 0) {
-        spriteRender.flipX = !isFlipped;
+        transform.localScale = new Vector2(-1f, 1f);
+        foreach (Transform child in transform) {
+          if(child.name != "HitBox") {
+            child.localScale = new Vector2(-1f, 1f);
+          }
+        }
       } else if (direction.x > 0) {
-        spriteRender.flipX = isFlipped;
+        transform.localScale = new Vector2(1f, 1f);
+        foreach (Transform child in transform) {
+          if(child.name != "HitBox") {
+            child.localScale = new Vector2(1f, 1f);
+          }
+        }
       }
       animator.SetBool("IdleOrMoving", direction.magnitude>0);
       body.velocity = direction;

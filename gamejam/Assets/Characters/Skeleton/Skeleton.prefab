@@ -177,6 +177,7 @@ MonoBehaviour:
     type: 3}
   attackNoise: {fileID: 2785559645724475288, guid: b3ff9b63ab3ca9b47add7412511f7b90,
     type: 3}
+  stats: {fileID: 0}
 --- !u!114 &3130889927513561100
 MonoBehaviour:
   m_ObjectHideFlags: 0
