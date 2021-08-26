@@ -65,6 +65,7 @@ public class BasicCharacter : MonoBehaviour
     public void Kill() {
       // handles killing the player
       // TODO: implement
+      animator.SetBool("isDead", true);
     }
 
     public void Strengthen(float strength) {
