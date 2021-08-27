@@ -48,6 +48,7 @@ public class GameController : MonoBehaviour
     private void Swap(Transform enemy) {
       // handles swapping player with enemy
       // swap controller
+      if (player == null) return;
       BasicCharacter playerChar = player.GetComponent<BasicCharacter>();
       BasicCharacter enemyChar = enemy.GetComponent<BasicCharacter>();
       playerChar.Toggle();
@@ -59,10 +60,11 @@ public class GameController : MonoBehaviour
       player = enemy;
     }
 
-    private void Spawn() {
+    private Transform Spawn() {
       // handles spawning an enemy
       Transform enemy = Instantiate(enemies[Random.Range(0,enemies.Length)], characters);
       enemy.position = spawners.GetChild(Random.Range(0,spawners.childCount)).position + new Vector3(Random.Range(-1,1),Random.Range(0.5f,2.5f),0);
+      return enemy;
     }
 
     IEnumerator SwapCharacters() {
@@ -80,8 +82,8 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(warnTime);
         // swap player
         if (warn != null) Destroy(warn.gameObject);
-        if (characters.childCount == 0) this.Spawn();
-        this.Swap(characters.GetChild(0));
+        if (characters.childCount == 0) this.Swap(this.Spawn());
+        else this.Swap(characters.GetChild(Random.Range(0,characters.childCount)));
         music.Play();
       }
     }
