@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 8078779792489846219}
   - component: {fileID: 7329160915211863373}
   - component: {fileID: 3130889927513561100}
+  - component: {fileID: 3867763454608304846}
+  - component: {fileID: 8225977117483186884}
   m_Layer: 0
   m_Name: Skeleton
   m_TagString: Untagged
@@ -179,7 +181,7 @@ MonoBehaviour:
     type: 3}
   strengthenNoise: {fileID: 6435459601995423113, guid: 0976b71284b612d4d9bb15211175eb50,
     type: 3}
-  stats: {fileID: 0}
+  isPlayer: 0
 --- !u!114 &3130889927513561100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +199,30 @@ MonoBehaviour:
   strengthbar: {fileID: 5404671645387598424}
   strengthtext: {fileID: 5294749834836102078}
   _strength: 1
+--- !u!114 &3867763454608304846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8078779792489846223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 635a286b84861a44ea9fa0575feb68ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8225977117483186884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8078779792489846223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1081f87cdb0d11e4fbbe5aab4499d6f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3060269524863984049
 PrefabInstance:
   m_ObjectHideFlags: 0

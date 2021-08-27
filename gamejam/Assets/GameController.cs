@@ -8,6 +8,14 @@ public class GameController : MonoBehaviour
   public CameraFollow sceneCamera;
   [Tooltip("Initial Player")]
   public Transform player;
+  [Tooltip("List of Enemies")]
+  public Transform[] enemies;
+  [Tooltip("Max Number of Enemies")]
+  public int maxEnemies = 20;
+  [Tooltip("Max Spawn Attempts")]
+  public int maxSpawns = 5;
+  [Tooltip("Time Between Spawn Attempts")]
+  public int spawnWaitTime = 10;
   [Tooltip("Time for Swap Warning")]
   public int warnTime = 5;
   [Tooltip("Minimum Time for Next Swap")]
@@ -19,8 +27,8 @@ public class GameController : MonoBehaviour
   [Tooltip("Swap Warning Noise")]
   public AudioSource warnNoise;
 
-  private Transform characters;
-  private Transform spawners;
+  public Transform characters;
+  public Transform spawners;
 
     private void Start() {
       // get parameters
@@ -32,19 +40,33 @@ public class GameController : MonoBehaviour
         music.transform.parent = this.transform;
         music.Play();
       }
-      // swapping randomly
+      // start regulators
       StartCoroutine(SwapCharacters());
+      StartCoroutine(SpawnEnemies());
     }
 
     private void Swap(Transform enemy) {
       // handles swapping player with enemy
+      // swap controller
+      BasicCharacter playerChar = player.GetComponent<BasicCharacter>();
+      BasicCharacter enemyChar = enemy.GetComponent<BasicCharacter>();
+      playerChar.Toggle();
+      enemyChar.Toggle();
+      // swap objects
       sceneCamera.target = enemy;
-      // TODO: swap player/enemy reference
-      // TODO: swap AIs
+      enemy.transform.parent = player.transform.parent;
+      player.transform.parent = characters.transform;
+      player = enemy;
+    }
+
+    private void Spawn() {
+      // handles spawning an enemy
+      Transform enemy = Instantiate(enemies[Random.Range(0,enemies.Length)], characters);
+      enemy.position = spawners.GetChild(Random.Range(0,spawners.childCount)).position + new Vector3(Random.Range(-1,1),Random.Range(0.5f,2.5f),0);
     }
 
     IEnumerator SwapCharacters() {
-      while(true) {
+      while (true) {
         // wait for prolonged time
         yield return new WaitForSeconds(Random.Range(minSwapTime, maxSwapTime));
         // warn player
@@ -58,8 +80,22 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(warnTime);
         // swap player
         if (warn != null) Destroy(warn.gameObject);
+        if (characters.childCount == 0) this.Spawn();
         this.Swap(characters.GetChild(0));
         music.Play();
+      }
+    }
+
+    IEnumerator SpawnEnemies() {
+      while (true) {
+        // wait for prolonged time
+        yield return new WaitForSeconds(spawnWaitTime);
+        // spawn a few enemies
+        int toSpawn = Mathf.Min(maxSpawns, maxEnemies-characters.childCount);
+        while (toSpawn>0) {
+          this.Spawn();
+          toSpawn -= 1;
+        }
       }
     }
 }

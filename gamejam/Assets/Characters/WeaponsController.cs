@@ -7,7 +7,9 @@ public class WeaponsController : MonoBehaviour {
         if(other.gameObject.GetComponent("BasicCharacter")) {
           BasicCharacter player = transform.parent.gameObject.GetComponent<BasicCharacter>();
           BasicCharacter otherChar = other.GetComponent<BasicCharacter>();
-          otherChar.Damage((int) (player.stats.strength / otherChar.stats.strength) * 5);
+          float ratio = player.stats.strength / otherChar.stats.strength;
+          bool killed = otherChar.Damage((int) (10*ratio));
+          if (killed) player.Strengthen(1/ratio);
         }
     }
 }

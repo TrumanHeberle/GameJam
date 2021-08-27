@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BasicCharacter : MonoBehaviour
 {
-    [Tooltip("Player Speed")]
+    [Tooltip("Character Speed")]
     public float speed = 5;
     [Tooltip("Attack Cooldown Time")]
     public float cooldown = 0.5f;
@@ -28,63 +28,69 @@ public class BasicCharacter : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRender;
     private Rigidbody2D body;
-    public CharacterStats stats;
-    private bool isFlipped;
+    private BasicBehavior playerBehavior;
+    private BasicBehavior enemyBehavior;
+    public bool isPlayer = false;
+    private BasicBehavior behavior { get { return isPlayer ? playerBehavior : enemyBehavior; } }
+    public CharacterStats stats { get { return GetComponent<CharacterStats>(); } }
 
+    // Core Functions
     private void Start() {
         // get parameters
         animator = GetComponent<Animator>();
         spriteRender = GetComponent<SpriteRenderer>();
         body = GetComponent<Rigidbody2D>();
-        stats = GetComponent<CharacterStats>();
-        isFlipped = spriteRender.flipX;
+        playerBehavior = (BasicBehavior) GetComponent<PlayerBehavior>();
+        enemyBehavior = (BasicBehavior) GetComponent<EnemyBehavior>();
         //Starts the looping coroutine
         StartCoroutine("Melee");
     }
 
     private void Update() {
-        bool W = Input.GetKey(KeyCode.W);
-        bool A = Input.GetKey(KeyCode.A);
-        bool S = Input.GetKey(KeyCode.S);
-        bool D = Input.GetKey(KeyCode.D);
+        Move(speed*behavior.checkMove().normalized);
         bool E = Input.GetKey(KeyCode.E);
         bool Q = Input.GetKey(KeyCode.Q);
-        Vector2 dir = new Vector2((D?1:0)-(A?1:0), (W?1:0)-(S?1:0));
-        dir.Normalize();
-        this.Move(speed*dir);
-        if (E) this.Damage(1);
-        if (Q) this.Strengthen(0.33f/stats.strength);
+        if (E) Damage(1);
+        if (Q) Strengthen(0.33f/stats.strength);
     }
 
     private void PlaySound(AudioSource src) {
       // handles playing an audio source
       if (src == null) return;
-      AudioSource audio = Instantiate(src, this.transform.position, Quaternion.identity);
-      audio.transform.parent = this.transform;
+      AudioSource audio = Instantiate(src, transform.position, Quaternion.identity);
+      audio.transform.parent = transform;
       audio.Play();
       Destroy(audio.gameObject, audio.clip.length);
     }
 
+    public void Toggle() {
+      // handles swapping control from player to enemy or vice versa
+      isPlayer = !isPlayer;
+    }
+
     public void Kill() {
       // handles killing the player
-      // TODO: implement
       animator.SetBool("isDead", true);
+      // TODO: handle death better, this is temporary
+      Destroy(gameObject);
     }
 
     public void Strengthen(float strength) {
       // handles strengthening the player
       stats.strength += strength;
-      this.PlaySound(strengthenNoise);
+      PlaySound(strengthenNoise);
     }
 
-    public void Damage(int damage) {
-      // handles damaging the player
+    public bool Damage(int damage) {
+      // handles damaging the player, returns whether the character has died
+      if (stats.health == 0) return false;
       stats.health -= damage;
       if (stats.health <= 0) {
-        this.Kill();
-      } else {
-        this.PlaySound(hurtNoise);
+        Kill();
+        return true;
       }
+      PlaySound(hurtNoise);
+      return false;
     }
 
     public void Move(Vector2 direction) {
@@ -112,16 +118,16 @@ public class BasicCharacter : MonoBehaviour
       // handles the player's attack
       animator.SetInteger("attackCounter", attackId);
       animator.SetBool("isAttacking", true);
-      this.PlaySound(attackNoise);
+      PlaySound(attackNoise);
     }
 
     IEnumerator Melee () {
        //Constantly loops so you only have to call it once
        while (true) {
            //Checks if attacking and then starts of the combo
-           if (Input.GetMouseButtonDown(0)) {
+           if (behavior.checkAttack()) {
                combo++;
-               this.Attack(combo);
+               Attack(combo);
                lastTime = Time.time;
 
                //Combo loop that ends the combo if you reach the maxTime between attacks, or reach the end of the combo
@@ -129,9 +135,9 @@ public class BasicCharacter : MonoBehaviour
                  body.velocity = Vector2.zero;
                  animator.SetBool("IdleOrMoving", false);
                    //Attacks if your cooldown has reset
-                   if (Input.GetMouseButtonDown(0) && (Time.time-lastTime) > cooldown && combo < maxCombo) {
+                   if ((Time.time-lastTime) > cooldown && combo < maxCombo && behavior.checkAttack()) {
                        combo++;
-                       this.Attack(combo);
+                       Attack(combo);
                        lastTime = Time.time;
                    }
                    yield return null;
