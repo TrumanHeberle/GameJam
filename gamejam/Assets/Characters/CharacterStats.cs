@@ -43,14 +43,15 @@ public class CharacterStats : MonoBehaviour
   public float strength {
     get { return _strength; }
     set {
+      _strength = value;
       strengthtext.text = level.ToString();
       strengthbar.value = value-level;
-      _strength = value;
     }
   }
 
   private void Start() {
     health = maxHealth;
     strengthbar.maxValue = 1;
+    strength = strength;
   }
 }

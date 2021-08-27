@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class BasicBehavior : MonoBehaviour
 {
-  public virtual Vector2 checkMove() {
+  public virtual Vector2 CheckMove() {
     // returns the direction to move
     return Vector2.zero;
   }
 
-  public virtual bool checkAttack() {
+  public virtual bool CheckAttack() {
     // returns whether the character should attack
     return false;
   }

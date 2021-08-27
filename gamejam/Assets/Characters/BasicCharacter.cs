@@ -47,7 +47,7 @@ public class BasicCharacter : MonoBehaviour
     }
 
     private void Update() {
-        Move(speed*behavior.checkMove().normalized);
+        Move(speed*behavior.CheckMove());
         bool E = Input.GetKey(KeyCode.E);
         bool Q = Input.GetKey(KeyCode.Q);
         if (E) Damage(1);
@@ -125,7 +125,7 @@ public class BasicCharacter : MonoBehaviour
        //Constantly loops so you only have to call it once
        while (true) {
            //Checks if attacking and then starts of the combo
-           if (behavior.checkAttack()) {
+           if (behavior.CheckAttack()) {
                combo++;
                Attack(combo);
                lastTime = Time.time;
@@ -135,7 +135,7 @@ public class BasicCharacter : MonoBehaviour
                  body.velocity = Vector2.zero;
                  animator.SetBool("IdleOrMoving", false);
                    //Attacks if your cooldown has reset
-                   if ((Time.time-lastTime) > cooldown && combo < maxCombo && behavior.checkAttack()) {
+                   if ((Time.time-lastTime) > cooldown && combo < maxCombo && behavior.CheckAttack()) {
                        combo++;
                        Attack(combo);
                        lastTime = Time.time;

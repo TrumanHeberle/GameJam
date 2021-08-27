@@ -27,8 +27,12 @@ public class GameController : MonoBehaviour
   [Tooltip("Swap Warning Noise")]
   public AudioSource warnNoise;
 
-  public Transform characters;
-  public Transform spawners;
+  [HideInInspector]
+  public static Transform characters;
+  [HideInInspector]
+  public static Transform spawners;
+  [HideInInspector]
+  public static int score = 0;
 
     private void Start() {
       // get parameters
@@ -47,23 +51,22 @@ public class GameController : MonoBehaviour
 
     private void Swap(Transform enemy) {
       // handles swapping player with enemy
-      // swap controller
       if (player == null) return;
       BasicCharacter playerChar = player.GetComponent<BasicCharacter>();
       BasicCharacter enemyChar = enemy.GetComponent<BasicCharacter>();
+      enemyChar.stats.health = Mathf.Max(enemyChar.stats.maxHealth/2, enemyChar.stats.health);
       playerChar.Toggle();
       enemyChar.Toggle();
-      // swap objects
       sceneCamera.target = enemy;
-      enemy.transform.parent = player.transform.parent;
-      player.transform.parent = characters.transform;
       player = enemy;
     }
 
     private Transform Spawn() {
       // handles spawning an enemy
       Transform enemy = Instantiate(enemies[Random.Range(0,enemies.Length)], characters);
-      enemy.position = spawners.GetChild(Random.Range(0,spawners.childCount)).position + new Vector3(Random.Range(-1,1),Random.Range(0.5f,2.5f),0);
+      enemy.position = spawners.GetChild(Random.Range(0,spawners.childCount)).position + new Vector3(Random.Range(-2.0f,2.0f),Random.Range(-0.5f,3.5f),0);
+      BasicCharacter enemyChar = enemy.GetComponent<BasicCharacter>();
+      enemyChar.stats.strength = Random.Range(1,characters.GetChild(Random.Range(0,characters.childCount)).GetComponent<BasicCharacter>().stats.strength);
       return enemy;
     }
 
