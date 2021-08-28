@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyBehavior : BasicBehavior
 {
   private float retargetChance = 0.1f;
-  private float attackChance = 0.01f;
+  private float attackChance = 0.1f;
   private float aggressiveChance = 0.67f;
   private Transform target;
   private bool aggressive = false;
@@ -62,7 +62,7 @@ public class EnemyBehavior : BasicBehavior
 
   IEnumerator ChooseAction() {
     while (true) {
-      aggressive = Random.value >= aggressiveChance;
+      aggressive = Random.value <= aggressiveChance;
       yield return new WaitForSeconds(3);
     }
   }

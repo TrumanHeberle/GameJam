@@ -24,6 +24,7 @@ public class BasicCharacter : MonoBehaviour
     private int combo = 0;
     // time of last attack
     private float lastTime;
+    private float healChance = 0.01f;
 
     private Animator animator;
     private SpriteRenderer spriteRender;
@@ -48,10 +49,7 @@ public class BasicCharacter : MonoBehaviour
 
     private void Update() {
         Move(speed*behavior.CheckMove());
-        bool E = Input.GetKey(KeyCode.E);
-        bool Q = Input.GetKey(KeyCode.Q);
-        if (E) Damage(1);
-        if (Q) Strengthen(0.33f/stats.strength);
+        if (Random.value <= healChance) Heal(1);
     }
 
     private void PlaySound(AudioSource src) {
@@ -79,6 +77,12 @@ public class BasicCharacter : MonoBehaviour
       // handles strengthening the player
       stats.strength += strength;
       PlaySound(strengthenNoise);
+    }
+
+    public void Heal(int health) {
+      // handles healing the player
+      if (stats.health == stats.maxHealth) return;
+      stats.health += health;
     }
 
     public bool Damage(int damage) {

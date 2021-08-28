@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-  [Tooltip("Scene Camera")]
-  public CameraFollow sceneCamera;
   [Tooltip("Initial Player")]
   public Transform player;
   [Tooltip("List of Enemies")]
@@ -27,15 +26,22 @@ public class GameController : MonoBehaviour
   [Tooltip("Swap Warning Noise")]
   public AudioSource warnNoise;
 
-  [HideInInspector]
+  public static CameraFollow sceneCamera;
   public static Transform characters;
-  [HideInInspector]
   public static Transform spawners;
-  [HideInInspector]
-  public static int score = 0;
+  private static int _score = 0;
+  public static int score {
+    get { return _score; }
+    set {
+      _score = value;
+      Text scoretext = sceneCamera.GetComponentInChildren<Text>();
+      scoretext.text = "Souls Freed: " + _score;
+    }
+  }
 
     private void Start() {
       // get parameters
+      sceneCamera = GameObject.Find("Main Camera").GetComponent<CameraFollow>();
       characters = GameObject.Find("Characters").transform;
       spawners = GameObject.Find("Spawners").transform;
       // start background music
