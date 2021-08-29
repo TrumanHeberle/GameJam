@@ -173,7 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  cooldown: 0.5
+  cooldown: 2.5
   maxTime: 0.8
   maxCombo: 3
   hurtNoise: {fileID: 5189194369667866645, guid: 64dc287bd75d7e243ab24c2d7464adce,
@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2649af32f9548094d95438cc0da1d818, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseDamage: 20
+  baseDamage: 13
   playerMultiplier: 2.5
   strengthMultiplier: 2.5
   killMultiplier: 5
