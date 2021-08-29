@@ -294,6 +294,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2649af32f9548094d95438cc0da1d818, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseDamage: 5
+  playerMultiplier: 2.5
+  strengthMultiplier: 2.5
+  killMultiplier: 5
+  power: 1.1
+  critMultiplier: 4
+  critChance: 0.25
 --- !u!1001 &5436686791837828247
 PrefabInstance:
   m_ObjectHideFlags: 0

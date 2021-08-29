@@ -2,9 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
+  // Make Singleton
+  public static GameController Instance { get; private set; }
+  private void Awake() { Instance = this; }
+
+  // Regular Class
   [Tooltip("Initial Player")]
   public Transform player;
   [Tooltip("List of Enemies")]
@@ -25,12 +31,19 @@ public class GameController : MonoBehaviour
   public AudioSource music;
   [Tooltip("Swap Warning Noise")]
   public AudioSource warnNoise;
+  [Tooltip("Swap Noise")]
+  public AudioSource swapNoise;
 
-  public static CameraFollow sceneCamera;
-  public static Transform characters;
-  public static Transform spawners;
-  private static int _score = 0;
-  public static int score {
+  [HideInInspector]
+  public CameraFollow sceneCamera;
+  [HideInInspector]
+  public Transform characters;
+  [HideInInspector]
+  public Transform spawners;
+  private List<Coroutine> coroutines = new List<Coroutine>();
+  private AudioSource warn;
+  private int _score = 0;
+  public int score {
     get { return _score; }
     set {
       _score = value;
@@ -46,13 +59,26 @@ public class GameController : MonoBehaviour
       spawners = GameObject.Find("Spawners").transform;
       // start background music
       if (music != null) {
-        music = Instantiate(music, this.transform.position, Quaternion.identity);
-        music.transform.parent = this.transform;
+        music = Instantiate(music, transform.position, Quaternion.identity);
+        music.transform.parent = transform;
         music.Play();
       }
       // start regulators
-      StartCoroutine(SwapCharacters());
-      StartCoroutine(SpawnEnemies());
+      coroutines.Add(StartCoroutine(SwapCharacters()));
+      coroutines.Add(StartCoroutine(SpawnEnemies()));
+    }
+
+    public void PlaySound(AudioSource src) {
+      PlaySound(src, transform);
+    }
+
+    public void PlaySound(AudioSource src, Transform origin) {
+      // handles playing an audio source
+      if (src == null) return;
+      AudioSource audio = Instantiate(src, origin.position, Quaternion.identity);
+      audio.transform.parent = origin;
+      audio.Play();
+      Destroy(audio.gameObject, audio.clip.length);
     }
 
     private void Swap(Transform enemy) {
@@ -60,11 +86,13 @@ public class GameController : MonoBehaviour
       if (player == null) return;
       BasicCharacter playerChar = player.GetComponent<BasicCharacter>();
       BasicCharacter enemyChar = enemy.GetComponent<BasicCharacter>();
-      enemyChar.stats.health = Mathf.Max(enemyChar.stats.maxHealth/2, enemyChar.stats.health);
+      enemyChar.stats.health = enemyChar.stats.maxHealth;
       playerChar.Toggle();
       enemyChar.Toggle();
       sceneCamera.target = enemy;
       player = enemy;
+      // play swap noise
+      PlaySound(swapNoise);
     }
 
     private Transform Spawn() {
@@ -76,35 +104,48 @@ public class GameController : MonoBehaviour
       return enemy;
     }
 
-    IEnumerator SwapCharacters() {
+    public void Restart() {
+      // handles restarting the game
+      SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void End() {
+      // handles ending the game
+      foreach (Coroutine coroutine in coroutines) StopCoroutine(coroutine);
+      foreach (Transform character in characters) Destroy(character.gameObject);
+      sceneCamera.target = GameObject.Find("EndTarget").transform;
+      if (warn != null) Destroy(warn.gameObject);
+      music.Play();
+    }
+
+    private IEnumerator SwapCharacters() {
       while (true) {
         // wait for prolonged time
         yield return new WaitForSeconds(Random.Range(minSwapTime, maxSwapTime));
         // warn player
         if (music != null) music.Pause();
-        AudioSource warn = null;
         if (warnNoise != null) {
-          warn = Instantiate(warnNoise, this.transform.position, Quaternion.identity);
-          warn.transform.parent = this.transform;
+          warn = Instantiate(warnNoise, transform.position, Quaternion.identity);
+          warn.transform.parent = transform;
           warn.Play();
         }
         yield return new WaitForSeconds(warnTime);
         // swap player
         if (warn != null) Destroy(warn.gameObject);
-        if (characters.childCount == 0) this.Swap(this.Spawn());
-        else this.Swap(characters.GetChild(Random.Range(0,characters.childCount)));
+        if (characters.childCount == 0) Swap(Spawn());
+        else Swap(characters.GetChild(Random.Range(0,characters.childCount)));
         music.Play();
       }
     }
 
-    IEnumerator SpawnEnemies() {
+    private IEnumerator SpawnEnemies() {
       while (true) {
         // wait for prolonged time
         yield return new WaitForSeconds(spawnWaitTime);
         // spawn a few enemies
         int toSpawn = Mathf.Min(maxSpawns, maxEnemies-characters.childCount);
         while (toSpawn>0) {
-          this.Spawn();
+          Spawn();
           toSpawn -= 1;
         }
       }

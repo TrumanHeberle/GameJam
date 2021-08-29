@@ -52,15 +52,6 @@ public class BasicCharacter : MonoBehaviour
         if (Random.value <= healChance) Heal(1);
     }
 
-    private void PlaySound(AudioSource src) {
-      // handles playing an audio source
-      if (src == null) return;
-      AudioSource audio = Instantiate(src, transform.position, Quaternion.identity);
-      audio.transform.parent = transform;
-      audio.Play();
-      Destroy(audio.gameObject, audio.clip.length);
-    }
-
     public void Toggle() {
       // handles swapping control from player to enemy or vice versa
       isPlayer = !isPlayer;
@@ -71,12 +62,13 @@ public class BasicCharacter : MonoBehaviour
       animator.SetBool("isDead", true);
       // TODO: handle death better, this is temporary
       Destroy(gameObject);
+      if (isPlayer) GameController.Instance.End();
     }
 
     public void Strengthen(float strength) {
       // handles strengthening the player
       stats.strength += strength;
-      PlaySound(strengthenNoise);
+      GameController.Instance.PlaySound(strengthenNoise, transform);
     }
 
     public void Heal(int health) {
@@ -93,7 +85,7 @@ public class BasicCharacter : MonoBehaviour
         Kill();
         return true;
       }
-      PlaySound(hurtNoise);
+      GameController.Instance.PlaySound(hurtNoise, transform);
       return false;
     }
 
@@ -122,7 +114,7 @@ public class BasicCharacter : MonoBehaviour
       // handles the player's attack
       animator.SetInteger("attackCounter", attackId);
       animator.SetBool("isAttacking", true);
-      PlaySound(attackNoise);
+      GameController.Instance.PlaySound(attackNoise, transform);
     }
 
     IEnumerator Melee () {

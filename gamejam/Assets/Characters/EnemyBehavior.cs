@@ -32,9 +32,9 @@ public class EnemyBehavior : BasicBehavior
     // get possible targets
     List<Transform> options = new List<Transform>();
     Vector2 pos = new Vector2(transform.position.x, transform.position.y);
-    if (GameController.characters != null) {
+    if (GameController.Instance.characters != null) {
       Vector2 other;
-      foreach (Transform character in GameController.characters) {
+      foreach (Transform character in GameController.Instance.characters) {
         other = new Vector2(character.position.x, character.position.y);
         if (transform != character) {
           options.Add(character);
@@ -63,7 +63,7 @@ public class EnemyBehavior : BasicBehavior
   IEnumerator ChooseAction() {
     while (true) {
       aggressive = Random.value <= aggressiveChance;
-      yield return new WaitForSeconds(3);
+      yield return new WaitForSeconds(5);
     }
   }
 }

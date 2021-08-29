@@ -22,7 +22,7 @@ public class CharacterStats : MonoBehaviour
   // current health
   public int health {
     get { return (int) healthbar.value; }
-    set { healthbar.value = value; }
+    set { healthbar.value = Mathf.Min(value, maxHealth); }
   }
 
   // Strength Parameters
