@@ -17,10 +17,15 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5251165730295948737, guid: cc9433d19dd7e854980dd33bf2a19383,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5251165730295948739, guid: cc9433d19dd7e854980dd33bf2a19383,
         type: 3}
       propertyPath: m_Name
-      value: Health
+      value: HealthBar
       objectReference: {fileID: 0}
     - target: {fileID: 5251165730295948740, guid: cc9433d19dd7e854980dd33bf2a19383,
         type: 3}
