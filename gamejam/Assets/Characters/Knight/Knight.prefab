@@ -70,12 +70,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2649af32f9548094d95438cc0da1d818, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseDamage: 5
+  baseDamage: 4
   playerMultiplier: 2.5
   strengthMultiplier: 2.5
   killMultiplier: 5
   critMultiplier: 4
-  critChance: 0.25
+  critChance: 0.33
 --- !u!1 &6215998691668803830
 GameObject:
   m_ObjectHideFlags: 0
